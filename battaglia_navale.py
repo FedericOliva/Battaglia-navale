@@ -18,14 +18,15 @@ def getPosizioniNavi(listaCaselle,nave1,nave2,nave3,nave4,nave5):
             if(listaCaselle[i][j].rect.colliderect(nave1.rect)):
                 listaPos.append((i,j))
             if(listaCaselle[i][j].rect.colliderect(nave2.rect)):
-               listaPos.append((i,j))
+                listaPos.append((i,j))
             if(listaCaselle[i][j].rect.colliderect(nave3.rect)):
-               listaPos.append((i,j))
+                listaPos.append((i,j))
             if(listaCaselle[i][j].rect.colliderect(nave4.rect)):
-               listaPos.append((i,j))
+                listaPos.append((i,j))
             if(listaCaselle[i][j].rect.colliderect(nave5.rect)):
-               listaPos.append((i,j))
+                listaPos.append((i,j))
     return listaPos
+
 pygame.init()
 #altezza e larghezza finestra
 info=pygame.display.Info()
@@ -36,9 +37,8 @@ screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
 pygame.display.set_caption('battaglia navale')
 
 #carico e allargo l'immagine per lo sfondo
-bg_img = pygame.image.load('bg_battagliaNavale.jpg')
+bg_img = pygame.image.load('./static/bg_battagliaNavale.jpg')
 bg_img = pygame.transform.scale(bg_img,(SCREEN_WIDTH+1500,SCREEN_HEIGHT+1500))
-
 
 #font per le scrite
 fontTitle=pygame.font.SysFont("Arial", 60)
@@ -75,6 +75,7 @@ ris.append(tuplav)
 ris2=[]
 ris2.append(tuplav)
 fine=False
+lista_mosse=[]
 #vettore caselle
 lista_caselle=[] 
 
@@ -94,12 +95,12 @@ for i in range(10):
 
 #immagini navi
 
-nave1 = pygame.image.load('boat1.png').convert_alpha()
+nave1 = pygame.image.load('./static/boat1.png').convert_alpha()
 nave1X,nave1Y=nave1.get_size()
 nave1 = pygame.transform.scale(nave1, (nave1X/2 ,nave1Y/2))
 
 
-nave2 = pygame.image.load('boat2.png').convert_alpha()
+nave2 = pygame.image.load('./static/boat2.png').convert_alpha()
 nave2X,nave2Y=nave2.get_size()
 nave2 = pygame.transform.scale(nave2, (nave2X ,nave2Y))
 
@@ -108,6 +109,14 @@ nave3 = pygame.transform.scale(nave2, (nave2X*0.75,nave2Y))
 nave4 = pygame.transform.scale(nave2, (nave2X ,nave2Y))
 
 nave5 = pygame.transform.scale(nave2, (nave2X*0.75,nave2Y))
+
+#carico l'immagini per le x e o
+o_img = pygame.image.load('./static/o.jpg')
+o_img = pygame.transform.scale(o_img, (1,1))
+
+x_img = pygame.image.load('./static/x.jpg')
+x_img = pygame.transform.scale(x_img, (1,1))
+
 #oggetti navi
 
 boat1=pygame_utilities.nave(SCREEN_WIDTH*0.1,SCREEN_HEIGHT*0.2,nave1,lista_caselle)
@@ -159,14 +168,12 @@ while(run):
     if(not campoMandato and inGame):
         conn.mandaPosizioniNavi(getPosizioniNavi(lista_caselle,boat1,boat2,boat3,boat4,boat5))
         campoMandato=True
-
     if(inGame):
         if(turno=='t'):
             pygame_utilities.draw_text("scegli una casella da bombardare",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.1,screen)
             for i in range (10):
                 for j in range(10):
                     lista_caselle[i][j].draw(screen)
-    
             if(ris[0]==()):
                 pass
             elif(ris[0][0] == 't'):
@@ -178,18 +185,25 @@ while(run):
                 for i in range(len(lista_caselle)):
                     for j in range(len(lista_caselle[i])):
                         if lista_caselle[i][j].rect.collidepoint(pos):
-                                if pygame.mouse.get_pressed()[0] == True and mossa[0]==():
+                                if pygame.mouse.get_pressed()[0] == True and mossa[0]==() and not (i,j) in lista_mosse:
+                                    lista_mosse.append((i,j))
                                     mossa[0]=(i,j)
                                     conn.mandaMossa(mossa)
                                     turno='f'
-
             if(mossa[0]!=()):
                 ris2[0]=conn.aspettaMossa()
                 mossa[0]=()
-
         else:
             
             pygame_utilities.draw_text("Aspetta che l'avversario faccia una mossa",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.2,screen)
+            for i in range (10):
+                for j in range(10):
+                    lista_caselle[i][j].draw(screen)
+                    boat1.draw()
+                    boat2.draw()
+                    boat3.draw()
+                    boat4.draw()
+                    boat5.draw()
             if ris2[0]==():
                 pass
             elif ris2[0][0]=='t':
@@ -217,9 +231,9 @@ while(run):
         fine=True
         pygame_utilities.draw_text("hai perso",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.3,screen)
     elif(ris2[0][2]=='v'):
-         inGame=False
-         fine=True
-         pygame_utilities.draw_text("hai vinto",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.3,screen)
+        inGame=False
+        fine=True
+        pygame_utilities.draw_text("hai vinto",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.3,screen)
     for event in pygame.event.get():
         if(event.type == pygame.QUIT):
             run=False

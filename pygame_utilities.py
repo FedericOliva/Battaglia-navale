@@ -111,3 +111,16 @@ class Point():
 
     def map(self,screen):
         pygame.draw.rect(screen,(0,0,0),self.point,2)
+
+class hits():
+    def __init__(self,x,y,image,campo):
+        self.xy=(x,y)
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
+        self.sizex=self.rect.size[0]
+        self.sizey=self.rect.size[1]
+        self.surface=pygame.Surface((self.sizex, self.sizey))
+        self.surface.blit(self.image,(0,0))
+        self.campo=campo
+        self.center=self.rect.center
