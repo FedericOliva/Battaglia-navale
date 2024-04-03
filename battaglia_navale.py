@@ -34,7 +34,7 @@ SCREEN_HEIGHT,SCREEN_WIDTH=info.current_h-100,info.current_w-100
 
 #istanzio la finestra
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-pygame.display.set_caption('battaglia navale')
+pygame.display.set_caption('./static/battaglia navale')
 
 #carico e allargo l'immagine per lo sfondo
 bg_img = pygame.image.load('./static/bg_battagliaNavale.jpg')
@@ -78,6 +78,7 @@ fine=False
 lista_mosse=[]
 #vettore caselle
 lista_caselle=[] 
+lista_mosse=[]
 
 #creo la connessione con il server
 
@@ -170,23 +171,22 @@ while(run):
         campoMandato=True
     if(inGame):
         if(turno=='t'):
-            pygame_utilities.draw_text("scegli una casella da bombardare",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.1,screen)
+            pygame_utilities.draw_text("scegli una casella da bombardare",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.05,screen)
             for i in range (10):
                 for j in range(10):
                     lista_caselle[i][j].draw(screen)
             if(ris[0]==()):
                 pass
             elif(ris[0][0] == 't'):
-                pygame_utilities.draw_text('sei stato colpito in '+str(ris[0][1]),fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.2,screen)
+                pygame_utilities.draw_text('sei stato colpito in '+str(ris[0][1]),fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.1,screen)
             elif(ris[0][0] == 'f'):
-                pygame_utilities.draw_text('l\'avversario ha mancato',fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.2,screen)
+                pygame_utilities.draw_text('l\'avversario ha mancato',fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.1,screen)
             if(mossa[0]==()):
                 pos=pygame.mouse.get_pos()
                 for i in range(len(lista_caselle)):
                     for j in range(len(lista_caselle[i])):
                         if lista_caselle[i][j].rect.collidepoint(pos):
-                                if pygame.mouse.get_pressed()[0] == True and mossa[0]==() and not (i,j) in lista_mosse:
-                                    lista_mosse.append((i,j))
+                                if pygame.mouse.get_pressed()[0] == True and mossa[0]==():
                                     mossa[0]=(i,j)
                                     conn.mandaMossa(mossa)
                                     turno='f'
@@ -196,20 +196,12 @@ while(run):
         else:
             
             pygame_utilities.draw_text("Aspetta che l'avversario faccia una mossa",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.2,screen)
-            for i in range (10):
-                for j in range(10):
-                    lista_caselle[i][j].draw(screen)
-                    boat1.draw()
-                    boat2.draw()
-                    boat3.draw()
-                    boat4.draw()
-                    boat5.draw()
             if ris2[0]==():
                 pass
             elif ris2[0][0]=='t':
-                pygame_utilities.draw_text("hai centrato una nave in"+str(ris2[0][1]),fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.3,screen)
+                pygame_utilities.draw_text("hai centrato una nave in"+str(ris2[0][1]),fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.1,screen)
             elif ris2[0][0]=='f':
-                pygame_utilities.draw_text("hai mancato",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.3,screen)
+                pygame_utilities.draw_text("hai mancato",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.1,screen)
             if flag:
                 thA=threading.Thread(target=aspetta,args=(conn,mossa))
                 thA.start()
