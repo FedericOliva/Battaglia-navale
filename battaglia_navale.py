@@ -33,10 +33,10 @@ SCREEN_HEIGHT,SCREEN_WIDTH=info.current_h-100,info.current_w-100
 
 #istanzio la finestra
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
-pygame.display.set_caption('battaglia navale')
+pygame.display.set_caption('./static/battaglia navale')
 
 #carico e allargo l'immagine per lo sfondo
-bg_img = pygame.image.load('bg_battagliaNavale.jpg')
+bg_img = pygame.image.load('./static/bg_battagliaNavale.jpg')
 bg_img = pygame.transform.scale(bg_img,(SCREEN_WIDTH+1500,SCREEN_HEIGHT+1500))
 
 
@@ -94,12 +94,12 @@ for i in range(10):
 
 #immagini navi
 
-nave1 = pygame.image.load('boat1.png').convert_alpha()
+nave1 = pygame.image.load('./static/boat1.png').convert_alpha()
 nave1X,nave1Y=nave1.get_size()
 nave1 = pygame.transform.scale(nave1, (nave1X/2 ,nave1Y/2))
 
 
-nave2 = pygame.image.load('boat2.png').convert_alpha()
+nave2 = pygame.image.load('./static/boat2.png').convert_alpha()
 nave2X,nave2Y=nave2.get_size()
 nave2 = pygame.transform.scale(nave2, (nave2X ,nave2Y))
 
