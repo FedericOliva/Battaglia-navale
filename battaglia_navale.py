@@ -79,6 +79,8 @@ lista_mosse=[]
 #vettore caselle
 lista_caselle=[] 
 lista_mosse=[]
+hits_mie=[]
+hits_avversario=[]
 
 #creo la connessione con il server
 
@@ -112,11 +114,13 @@ nave4 = pygame.transform.scale(nave2, (nave2X ,nave2Y))
 nave5 = pygame.transform.scale(nave2, (nave2X*0.75,nave2Y))
 
 #carico l'immagini per le x e o
-o_img = pygame.image.load('./static/o.jpg')
-o_img = pygame.transform.scale(o_img, (1,1))
+o_img = pygame.image.load('./static/o.png')
+ox,oy = o_img.get_size()
+o_img = pygame.transform.scale(o_img, (ox*0.1,oy*0.1))
 
-x_img = pygame.image.load('./static/x.jpg')
-x_img = pygame.transform.scale(x_img, (1,1))
+x_img = pygame.image.load('./static/x.png')
+xx,xy = x_img.get_size()
+x_img = pygame.transform.scale(x_img, (xx*0.1,xy*0.1))
 
 #oggetti navi
 
@@ -171,10 +175,12 @@ while(run):
         campoMandato=True
     if(inGame):
         if(turno=='t'):
-            pygame_utilities.draw_text("scegli una casella da bombardare",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.05,screen)
+            pygame_utilities.draw_text("scegli una casella da bombardare",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.2,screen)
             for i in range (10):
                 for j in range(10):
                     lista_caselle[i][j].draw(screen)
+            for hit in hits_avversario:
+                hit.draw(screen)
             if(ris[0]==()):
                 pass
             elif(ris[0][0] == 't'):
@@ -185,16 +191,30 @@ while(run):
                 pos=pygame.mouse.get_pos()
                 for i in range(len(lista_caselle)):
                     for j in range(len(lista_caselle[i])):
-                        if lista_caselle[i][j].rect.collidepoint(pos):
+                        if lista_caselle[i][j].rect.collidepoint(pos) and not (i,j) in lista_mosse:
                                 if pygame.mouse.get_pressed()[0] == True and mossa[0]==():
+                                    lista_mosse.append((i,j))
                                     mossa[0]=(i,j)
                                     conn.mandaMossa(mossa)
                                     turno='f'
             if(mossa[0]!=()):
                 ris2[0]=conn.aspettaMossa()
+                if(ris2[0][0] == 't'):
+                    hits_avversario.append(pygame_utilities.hits(o_img,lista_caselle[ris2[0][1][0][0]][ris2[0][1][0][1]].rect.topleft))
+                elif(ris2[0][0] == 'f'):
+                    hits_avversario.append(pygame_utilities.hits(x_img,lista_caselle[ris2[0][1][0][0]][ris2[0][1][0][1]].rect.topleft))
                 mossa[0]=()
         else:
-            
+            for hit in hits_mie:
+                hit.draw(screen)
+            for i in range (10):
+                for j in range(10):
+                    lista_caselle[i][j].draw(screen)
+            boat1.draw(screen,False)
+            boat2.draw(screen,False)
+            boat3.draw(screen,False)
+            boat4.draw(screen,False)
+            boat5.draw(screen,False)
             pygame_utilities.draw_text("Aspetta che l'avversario faccia una mossa",fontTitle,(0,0,0),SCREEN_WIDTH*0.3,SCREEN_HEIGHT*0.2,screen)
             if ris2[0]==():
                 pass
@@ -210,7 +230,11 @@ while(run):
             if not thA.is_alive():
                 thA.join()
                 ris=mossa[:]
-                print(ris)     
+                print(ris)
+                if(ris[0][0] == 't'):
+                    hits_mie.append(pygame_utilities.hits(o_img,lista_caselle[ris[0][1][0][0]][ris[0][1][0][1]].rect.topleft))
+                elif(ris[0][0] == 'f'):
+                    hits_mie.append(pygame_utilities.hits(x_img,lista_caselle[ris[0][1][0][0]][ris[0][1][0][1]].rect.topleft))
                 mossa[0]=()
                 flag=True
                 turno='t'
